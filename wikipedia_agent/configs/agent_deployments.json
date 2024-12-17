@@ -7,7 +7,7 @@
             "config_name": "agent_config_1",
             "llm_config": {"config_name": "model_1"},
             "system_prompt": {
-                "role": "You are a helpful AI assistant.",
+                "role": "You are a helpful AI assistant."
             }
         }
     }
