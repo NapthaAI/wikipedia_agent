@@ -24,7 +24,7 @@ async def run(agent_run: AgentRunInput, *args, **kwargs):
     if not page:
         return {"error": "Page not found"}
     
-    page = page.json()['rows'][0]['text']
+    page = page['rows'][0]['text']
     logger.info(f"Page content: {page}")
 
     # Create a prompt for the LLM
