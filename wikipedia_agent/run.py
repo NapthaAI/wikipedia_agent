@@ -28,8 +28,9 @@ async def run(agent_run: AgentRunInput, *args, **kwargs):
     logger.info(f"Page content: {page}")
 
     # Create a prompt for the LLM
+
     messages = [
-        {"role": "system", "content": agent_run.agent_deployment.agent_config.system_prompt.role},
+        {"role": "system", "content": agent_run.agent_deployment.agent_config.system_prompt['role']},
         {"role": "user", "content": f"The user asked: {question}. The wikipedia page content is: {page}\n\nAnswer the question based on the page content."}
     ]
     logger.info(f"Messages: {messages}")
