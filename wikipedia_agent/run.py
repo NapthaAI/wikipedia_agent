@@ -38,7 +38,7 @@ async def run(agent_run: AgentRunInput, *args, **kwargs):
     # Call the LLM
     input_ = {
         "messages": messages,
-        "model": agent_run.agent_deployment.agent_config.llm_config['model']
+        "model": agent_run.agent_deployment.agent_config.llm_config.model
     }
     llm_response = await llm_node.run_inference(input_)
     logger.info(f"LLM response: {llm_response}")
