@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "wikipedia_agent"
+version = "0.1.0"
+description = ""
+authors = ["moarshy <marshath@gmail.com>"]
+readme = "README.md"
+packages = [
+    {include = "wikipedia_agent", from="."}
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<=3.13"
+pydantic = "^2.7.0"
+naptha-sdk = {git = "https://github.com/NapthaAI/naptha-sdk.git"}
+python-dotenv = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
