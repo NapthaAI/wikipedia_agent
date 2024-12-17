@@ -19,7 +19,7 @@ def run(agent_run: AgentRunInput, *args, **kwargs):
     question = agent_run.inputs.question
 
     # Retrieve the wikipedia page
-    page = kb_node.knowledge_base_run(table_name=table_name, condition={'title': query})
+    page = kb_node.query_table(table_name=table_name, condition={'title': query})
 
     if not page:
         return {"error": "Page not found"}
