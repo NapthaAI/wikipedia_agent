@@ -5,7 +5,7 @@ from naptha_sdk.schemas import AgentRunInput
 logger = logging.getLogger(__name__)
 
 
-def run(agent_run: AgentRunInput, *args, **kwargs):
+async def run(agent_run: AgentRunInput, *args, **kwargs):
     logger.info(f"Running with inputs {agent_run.inputs}")
 
     kb_deployment = agent_run.kb_deployment
@@ -19,7 +19,7 @@ def run(agent_run: AgentRunInput, *args, **kwargs):
     question = agent_run.inputs.question
 
     # Retrieve the wikipedia page
-    page = kb_node.query_table(table_name=table_name, condition={'title': query})
+    page = await kb_node.query_table(table_name=table_name, condition={'title': query})
 
     if not page:
         return {"error": "Page not found"}
@@ -35,7 +35,7 @@ def run(agent_run: AgentRunInput, *args, **kwargs):
     logger.info(f"Messages: {messages}")
 
     # Call the LLM
-    llm_response = llm_node.chat(
+    llm_response = await llm_node.chat(
         messages=messages,
         model=agent_run.agent_deployment.agent_config.llm_config.model
     )
