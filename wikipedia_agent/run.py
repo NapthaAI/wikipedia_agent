@@ -1,4 +1,5 @@
 import logging
+from naptha_sdk.kb import KnowledgeBase
 from naptha_sdk.client.node import Node
 from naptha_sdk.schemas import AgentRunInput
 
@@ -9,17 +10,14 @@ async def run(agent_run: AgentRunInput, *args, **kwargs):
     logger.info(f"Running with inputs {agent_run.inputs}")
 
     kb_deployment = agent_run.kb_deployment
-    table_name = kb_deployment.kb_config["table_name"]
-    table_schema = kb_deployment.kb_config["schema"]
-
-    kb_node = Node(kb_deployment.kb_node_url)
+    kb = KnowledgeBase(kb_deployment)
     llm_node = Node(agent_run.agent_deployment.worker_node_url)
 
     query = agent_run.inputs.query
     question = agent_run.inputs.question
 
     # Retrieve the wikipedia page
-    page = await kb_node.query_table(table_name=table_name, condition={'title': query})
+    page = await kb.get_kb(column_name='title', column_value=query)
 
     if not page:
         return {"error": "Page not found"}
