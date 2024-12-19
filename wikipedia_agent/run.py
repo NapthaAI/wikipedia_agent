@@ -22,14 +22,13 @@ async def run(agent_run: AgentRunInput, *args, **kwargs):
     if not page:
         return {"error": "Page not found"}
     
-    page = page['rows'][0]['text']
     logger.info(f"Page content: {page}")
 
     # Create a prompt for the LLM
 
     messages = [
         {"role": "system", "content": agent_run.agent_deployment.agent_config.system_prompt['role']},
-        {"role": "user", "content": f"The user asked: {question}. The wikipedia page content is: {page}\n\nAnswer the question based on the page content."}
+        {"role": "user", "content": f"The user asked: {question}. The wikipedia page content is: {page['text']}\n\nAnswer the question based on the page content."}
     ]
     logger.info(f"Messages: {messages}")
 
