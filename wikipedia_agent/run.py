@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 async def run(agent_run: AgentRunInput, *args, **kwargs):
     logger.info(f"Running with inputs {agent_run.inputs}")
 
-    kb_deployment = agent_run.kb_deployment
+    kb_deployment = agent_run.agent_deployment.kb_deployments[0]
     kb = KnowledgeBase(kb_deployment)
     llm_node = Node(agent_run.agent_deployment.worker_node_url)
 
