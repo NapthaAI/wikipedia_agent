@@ -9,9 +9,9 @@ logger = logging.getLogger(__name__)
 async def run(agent_run: AgentRunInput, *args, **kwargs):
     logger.info(f"Running with inputs {agent_run.inputs}")
 
-    kb_deployment = agent_run.agent_deployment.kb_deployments[0]
+    kb_deployment = agent_run.deployment.kb_deployments[0]
     kb = KnowledgeBase(kb_deployment)
-    llm_node = Node(agent_run.agent_deployment.worker_node_url)
+    llm_node = Node(agent_run.deployment.worker_node_url)
 
     query = agent_run.inputs.query
     question = agent_run.inputs.question
@@ -27,7 +27,7 @@ async def run(agent_run: AgentRunInput, *args, **kwargs):
     # Create a prompt for the LLM
 
     messages = [
-        {"role": "system", "content": agent_run.agent_deployment.agent_config.system_prompt['role']},
+        {"role": "system", "content": agent_run.deployment.agent_config.system_prompt['role']},
         {"role": "user", "content": f"The user asked: {question}. The wikipedia page content is: {page['text']}\n\nAnswer the question based on the page content."}
     ]
     logger.info(f"Messages: {messages}")
@@ -35,7 +35,7 @@ async def run(agent_run: AgentRunInput, *args, **kwargs):
     # Call the LLM
     input_ = {
         "messages": messages,
-        "model": agent_run.agent_deployment.agent_config.llm_config.model
+        "model": agent_run.deployment.agent_config.llm_config.model
     }
     llm_response = await llm_node.run_inference(input_)
     logger.info(f"LLM response: {llm_response}")
