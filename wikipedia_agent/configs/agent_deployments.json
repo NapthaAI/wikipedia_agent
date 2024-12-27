@@ -3,7 +3,7 @@
         "name": "agent_deployment_1",
         "module": {"name": "wikipedia_agent"},
         "node": {"ip": "localhost"},
-        "agent_config": {
+        "config": {
             "config_name": "agent_config_1",
             "llm_config": {"config_name": "model_1"},
             "system_prompt": {

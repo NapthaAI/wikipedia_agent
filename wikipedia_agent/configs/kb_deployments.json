@@ -3,7 +3,7 @@
         "name": "kb_deployment_1",
         "module": {"name": "wikipedia_kb"},
         "node": {"ip": "localhost"},
-        "kb_config": {
+        "config": {
             "table_name": "wikipedia_kb",
             "query_col": "title",
             "answer_col": "text",
