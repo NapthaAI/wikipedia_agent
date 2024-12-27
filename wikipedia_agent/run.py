@@ -11,7 +11,7 @@ async def run(agent_run: AgentRunInput, *args, **kwargs):
 
     kb_deployment = agent_run.deployment.kb_deployments[0]
     kb = KnowledgeBase(kb_deployment)
-    llm_node = Node(agent_run.deployment.worker_node_url)
+    llm_node = Node(agent_run.deployment.node)
 
     query = agent_run.inputs.query
     question = agent_run.inputs.question

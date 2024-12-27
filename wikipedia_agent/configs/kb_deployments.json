@@ -2,7 +2,7 @@
     {
         "name": "kb_deployment_1",
         "module": {"name": "wikipedia_kb"},
-        "kb_node_url": "http://localhost:7001",
+        "node": {"ip": "localhost"},
         "kb_config": {
             "table_name": "wikipedia_kb",
             "query_col": "title",
