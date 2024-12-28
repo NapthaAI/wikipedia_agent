@@ -9,6 +9,11 @@
             "system_prompt": {
                 "role": "You are a helpful AI assistant."
             }
-        }
+        },
+        "kb_deployments": [
+            {
+                "name": "kb_deployment_1"
+            }
+        ]
     }
 ]
