@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 from dotenv import load_dotenv
-from naptha_sdk.kb import KnowledgeBase
+from naptha_sdk.modules.kb import KnowledgeBase
 from naptha_sdk.client.node import Node
 from naptha_sdk.schemas import AgentDeployment, AgentRunInput
 from wikipedia_agent.schemas import InputSchema, SystemPromptSchema
