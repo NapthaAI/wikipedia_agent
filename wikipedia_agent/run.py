@@ -5,6 +5,7 @@ from typing import Dict
 from naptha_sdk.modules.kb import KnowledgeBase
 from naptha_sdk.inference import InferenceClient
 from naptha_sdk.schemas import AgentDeployment, AgentRunInput, KBRunInput
+from naptha_sdk.user import sign_consumer_id
 from wikipedia_agent.schemas import InputSchema, SystemPromptSchema
 
 load_dotenv()
@@ -24,6 +25,7 @@ class WikipediaAgent:
             consumer_id=module_run.consumer_id,
             inputs={"function_name": "run_query", "function_input_data": {"query": module_run.inputs.query}},
             deployment=self.deployment.kb_deployments[0].model_dump(),
+            signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
         )
 
         page = await self.wikipedia_kb.call_kb_func(kb_run_input)
@@ -75,6 +77,7 @@ if __name__ == "__main__":
         "inputs": input_params,
         "deployment": deployment,
         "consumer_id": naptha.user.id,
+        "signature": sign_consumer_id(naptha.user.id, os.getenv("PRIVATE_KEY"))
     }
 
     response = asyncio.run(run(module_run))
