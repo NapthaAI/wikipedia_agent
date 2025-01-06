@@ -18,11 +18,11 @@ class WikipediaAgent:
         self.system_prompt = SystemPromptSchema(role=self.deployment.config.system_prompt["role"])
         self.inference_provider = InferenceClient(self.deployment.node)
 
-    async def answer_question_from_content(self, module_run: AgentRunInput):
+    async def run_wikipedia_agent(self, module_run: AgentRunInput):
 
         kb_run_input = KBRunInput(
             consumer_id=module_run.consumer_id,
-            inputs=module_run.inputs,
+            inputs={"function_name": "run_query", "function_input_data": {"query": module_run.inputs.query}},
             deployment=self.deployment.kb_deployments[0].model_dump(),
         )
 
@@ -34,7 +34,7 @@ class WikipediaAgent:
 
         messages = [
             {"role": "system", "content": self.system_prompt.role},
-            {"role": "user", "content": f"The user asked: {module_run.inputs.tool_input_data['question']}. The wikipedia page content is: {page}\n\nAnswer the question based on the page content."}
+            {"role": "user", "content": f"The user asked: {module_run.inputs.question}. The wikipedia page content is: {page}\n\nAnswer the question based on the page content."}
         ]
         logger.info(f"Messages: {messages}")
 
@@ -49,8 +49,7 @@ async def run(module_run: Dict, *args, **kwargs):
     module_run = AgentRunInput(**module_run)
     module_run.inputs = InputSchema(**module_run.inputs)
     wikipedia_agent = WikipediaAgent(module_run.deployment)
-    method = getattr(wikipedia_agent, module_run.inputs.tool_name, None)
-    answer = await method(module_run)
+    answer = await wikipedia_agent.run_wikipedia_agent(module_run)
     return answer
 
 
@@ -67,8 +66,9 @@ if __name__ == "__main__":
     question = "What is Elon Musk's net worth?"
 
     input_params = {
-        "tool_name": "answer_question_from_content",
-        "tool_input_data": {"query": query, "question": question},
+        "function_name": "run_query",
+        "query": query,
+        "question": question,
     }
 
     module_run = {

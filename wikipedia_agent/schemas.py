@@ -2,8 +2,9 @@ from pydantic import BaseModel
 from typing import Dict
 
 class InputSchema(BaseModel):
-    tool_name: str
-    tool_input_data: Dict
+    function_name: str
+    query: str
+    question: str
 
 class SystemPromptSchema(BaseModel):
     """Schema for system prompts."""
