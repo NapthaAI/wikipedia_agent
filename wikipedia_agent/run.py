@@ -1,6 +1,7 @@
 import logging
 import os
 from dotenv import load_dotenv
+from typing import Dict
 from naptha_sdk.modules.kb import KnowledgeBase
 from naptha_sdk.inference import InferenceClient
 from naptha_sdk.schemas import AgentDeployment, AgentRunInput, KBRunInput
@@ -21,7 +22,7 @@ class WikipediaAgent:
 
         kb_run_input = KBRunInput(
             consumer_id=module_run.consumer_id,
-            inputs=module_run.inputs.tool_input_data,
+            inputs=module_run.inputs,
             deployment=self.deployment.kb_deployments[0].model_dump(),
         )
 
@@ -44,8 +45,9 @@ class WikipediaAgent:
         return llm_response
     
 
-async def run(module_run: AgentRunInput, *args, **kwargs):
-    logger.info(f"Running with inputs {module_run.inputs.tool_input_data}")
+async def run(module_run: Dict, *args, **kwargs):
+    module_run = AgentRunInput(**module_run)
+    module_run.inputs = InputSchema(**module_run.inputs)
     wikipedia_agent = WikipediaAgent(module_run.deployment)
     method = getattr(wikipedia_agent, module_run.inputs.tool_name, None)
     answer = await method(module_run)
@@ -59,21 +61,21 @@ if __name__ == "__main__":
 
     naptha = Naptha()
 
-    deployment = asyncio.run(setup_module_deployment("agent", "wikipedia_agent/configs/deployment.json", node_url = os.getenv("NODE_URL")))
+    deployment = asyncio.run(setup_module_deployment("agent", "wikipedia_agent/configs/deployment.json", node_url = os.getenv("NODE_URL"), user_id=naptha.user.id))
 
     query = "Elon Musk"
     question = "What is Elon Musk's net worth?"
 
-    input_params = InputSchema(
-        tool_name="answer_question_from_content",
-        tool_input_data={"query": query, "question": question},
-    )
+    input_params = {
+        "tool_name": "answer_question_from_content",
+        "tool_input_data": {"query": query, "question": question},
+    }
 
-    module_run = AgentRunInput(
-        inputs=input_params,
-        deployment=deployment,
-        consumer_id=naptha.user.id,
-    )
+    module_run = {
+        "inputs": input_params,
+        "deployment": deployment,
+        "consumer_id": naptha.user.id,
+    }
 
     response = asyncio.run(run(module_run))
 
