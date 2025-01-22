@@ -44,7 +44,7 @@ class WikipediaAgent:
                                                                     "messages": messages,
                                                                     "temperature": self.deployment.config.llm_config.temperature,
                                                                     "max_tokens": self.deployment.config.llm_config.max_tokens})
-        return llm_response
+        return llm_response.choices[0].message.content
     
 
 async def run(module_run: Dict, *args, **kwargs):
