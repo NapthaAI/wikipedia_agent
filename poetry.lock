@@ -770,8 +770,8 @@ tomlkit = "^0.13.2"
 [package.source]
 type = "git"
 url = "https://github.com/NapthaAI/naptha-sdk.git"
-reference = "HEAD"
-resolved_reference = "0bc83fd35aa28158b36825f8264a4c04b7509b2b"
+reference = "chore/update-storage-config"
+resolved_reference = "16cfe25513b43003cb438cdb41338ee96ce9251c"
 
 [[package]]
 name = "natsort"
@@ -1492,4 +1492,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<=3.13"
-content-hash = "0445758bf6dcd67ca8a90e87f03e0576c9d3b7b6757c630ab6edadcd092ec9ec"
+content-hash = "430ab48857dd5127d1908a363bc9e0c92098b421c0189804e0d24ea80d044ecd"

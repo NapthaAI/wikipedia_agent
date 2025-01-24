@@ -4,17 +4,19 @@
         "module": {"name": "wikipedia_kb"},
         "node": {"ip": "localhost"},
         "config": {
-            "storage_type": "db",
-            "path": "wikipedia_kb",
-            "options": {
-                "query_col": "title",
-                "answer_col": "text"
-            },
-            "schema": {
-                "id": {"type": "INTEGER", "primary_key": true},
-                "url": {"type": "TEXT"},
-                "title": {"type": "TEXT"},
-                "text": {"type": "TEXT"}
+            "storage_config": {
+                "storage_type": "db",
+                "path": "wikipedia_kb",
+                "options": {
+                    "query_col": "title",
+                    "answer_col": "text"
+                },
+                "storage_schema": {
+                    "id": {"type": "INTEGER", "primary_key": true},
+                    "url": {"type": "TEXT"},
+                    "title": {"type": "TEXT"},
+                    "text": {"type": "TEXT"}
+                }
             }
         }
     }

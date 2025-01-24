@@ -27,7 +27,7 @@ class WikipediaAgent:
         kb_run_input = KBRunInput(
             consumer_id=module_run.consumer_id,
             inputs={"func_name": "init", "func_input_data": None},
-            deployment=self.deployment.kb_deployments[0].model_dump(),
+            deployment=self.deployment.kb_deployments[0],
             signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
         )
         result = await self.wikipedia_kb.call_kb_func(kb_run_input)
@@ -37,7 +37,7 @@ class WikipediaAgent:
         kb_run_input = KBRunInput(
             consumer_id=module_run.consumer_id,
             inputs={"func_name": "run_query", "func_input_data": {"query": module_run.inputs.query}},
-            deployment=self.deployment.kb_deployments[0].model_dump(),
+            deployment=self.deployment.kb_deployments[0],
             signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
         )
 
