@@ -23,7 +23,7 @@ class WikipediaAgent:
 
         kb_run_input = KBRunInput(
             consumer_id=module_run.consumer_id,
-            inputs={"function_name": "run_query", "function_input_data": {"query": module_run.inputs.query}},
+            inputs={"func_name": "run_query", "func_input_data": {"query": module_run.inputs.query}},
             deployment=self.deployment.kb_deployments[0].model_dump(),
             signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
         )
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     question = "What is Elon Musk's net worth?"
 
     input_params = {
-        "function_name": "run_query",
+        "func_name": "run_query",
         "query": query,
         "question": question,
     }

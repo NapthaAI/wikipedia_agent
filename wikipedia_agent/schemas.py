@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Dict
 
 class InputSchema(BaseModel):
-    function_name: str
+    func_name: str
     query: str
     question: str
 
