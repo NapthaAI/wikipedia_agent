@@ -21,6 +21,19 @@ class WikipediaAgent:
 
     async def run_wikipedia_agent(self, module_run: AgentRunInput):
 
+        logger.info("Checking if knowledge base exists")
+
+        # First make sure Wikipedia KB exists
+        kb_run_input = KBRunInput(
+            consumer_id=module_run.consumer_id,
+            inputs={"func_name": "init", "func_input_data": None},
+            deployment=self.deployment.kb_deployments[0].model_dump(),
+            signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
+        )
+        result = await self.wikipedia_kb.call_kb_func(kb_run_input)
+        logger.info(f"KB run result: {result}")
+
+        # Now run the query
         kb_run_input = KBRunInput(
             consumer_id=module_run.consumer_id,
             inputs={"func_name": "run_query", "func_input_data": {"query": module_run.inputs.query}},
