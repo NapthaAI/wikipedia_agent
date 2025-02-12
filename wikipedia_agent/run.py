@@ -5,7 +5,7 @@ from typing import Dict
 from naptha_sdk.modules.kb import KnowledgeBase
 from naptha_sdk.inference import InferenceClient
 from naptha_sdk.schemas import AgentDeployment, AgentRunInput, KBRunInput
-from naptha_sdk.user import sign_consumer_id
+from naptha_sdk.user import sign_consumer_id, get_private_key_from_pem
 from wikipedia_agent.schemas import InputSchema, SystemPromptSchema
 
 load_dotenv()
@@ -26,7 +26,7 @@ class WikipediaAgent:
             consumer_id=module_run.consumer_id,
             inputs={"func_name": "init", "func_input_data": None},
             deployment=self.deployment.kb_deployments[0],
-            signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
+            signature=sign_consumer_id(module_run.consumer_id, get_private_key_from_pem(os.getenv("PRIVATE_KEY_FULL_PATH")))
         )
         result = await self.wikipedia_kb.run(kb_run_input)
         logger.info(f"KB run result: {result}")
@@ -36,7 +36,7 @@ class WikipediaAgent:
             consumer_id=module_run.consumer_id,
             inputs={"func_name": "run_query", "func_input_data": {"query": module_run.inputs.query}},
             deployment=self.deployment.kb_deployments[0],
-            signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
+            signature=sign_consumer_id(module_run.consumer_id, get_private_key_from_pem(os.getenv("PRIVATE_KEY_FULL_PATH")))
         )
 
         page = await self.wikipedia_kb.run(kb_run_input)
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         "inputs": input_params,
         "deployment": deployment,
         "consumer_id": naptha.user.id,
-        "signature": sign_consumer_id(naptha.user.id, os.getenv("PRIVATE_KEY"))
+        "signature": sign_consumer_id(naptha.user.id, get_private_key_from_pem(os.getenv("PRIVATE_KEY")))
     }
 
     response = asyncio.run(run(module_run))
