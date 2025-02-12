@@ -13,24 +13,22 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 class WikipediaAgent:
-    def __init__(self, deployment: AgentDeployment):
+    async def create(self, deployment: AgentDeployment, *args, **kwargs):
         self.deployment = deployment
-        self.wikipedia_kb = KnowledgeBase(kb_deployment=self.deployment.kb_deployments[0])
+        self.wikipedia_kb = KnowledgeBase()
+        kb_deployment = await self.wikipedia_kb.create(deployment=self.deployment.kb_deployments[0])
         self.system_prompt = SystemPromptSchema(role=self.deployment.config.system_prompt["role"])
-        self.inference_provider = InferenceClient(self.deployment.node)
+        self.inference_client = InferenceClient(self.deployment.node)
 
-    async def run_wikipedia_agent(self, module_run: AgentRunInput):
-
+    async def run(self, module_run: AgentRunInput, *args, **kwargs):
         logger.info("Checking if knowledge base exists")
-
-        # First make sure Wikipedia KB exists
         kb_run_input = KBRunInput(
             consumer_id=module_run.consumer_id,
             inputs={"func_name": "init", "func_input_data": None},
             deployment=self.deployment.kb_deployments[0],
             signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
         )
-        result = await self.wikipedia_kb.call_kb_func(kb_run_input)
+        result = await self.wikipedia_kb.run(kb_run_input)
         logger.info(f"KB run result: {result}")
 
         # Now run the query
@@ -41,7 +39,7 @@ class WikipediaAgent:
             signature=sign_consumer_id(module_run.consumer_id, os.getenv("PRIVATE_KEY"))
         )
 
-        page = await self.wikipedia_kb.call_kb_func(kb_run_input)
+        page = await self.wikipedia_kb.run(kb_run_input)
         
         if not page:
             return {"error": "Page not found"}
@@ -53,7 +51,7 @@ class WikipediaAgent:
         ]
         logger.info(f"Messages: {messages}")
 
-        llm_response = await self.inference_provider.run_inference({"model": self.deployment.config.llm_config.model,
+        llm_response = await self.inference_client.run_inference({"model": self.deployment.config.llm_config.model,
                                                                     "messages": messages,
                                                                     "temperature": self.deployment.config.llm_config.temperature,
                                                                     "max_tokens": self.deployment.config.llm_config.max_tokens})
@@ -63,9 +61,10 @@ class WikipediaAgent:
 async def run(module_run: Dict, *args, **kwargs):
     module_run = AgentRunInput(**module_run)
     module_run.inputs = InputSchema(**module_run.inputs)
-    wikipedia_agent = WikipediaAgent(module_run.deployment)
-    answer = await wikipedia_agent.run_wikipedia_agent(module_run)
-    return answer
+    wikipedia_agent = WikipediaAgent()
+    await wikipedia_agent.create(module_run.deployment)
+    agent_response = await wikipedia_agent.run(module_run)
+    return agent_response
 
 
 if __name__ == "__main__":
